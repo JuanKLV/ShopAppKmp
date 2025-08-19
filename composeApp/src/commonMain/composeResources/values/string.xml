@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">ShopApp</string>
+    <string name="sing_in">Iniciar Sesión</string>
+    <string name="email">Correo electrónico</string>
+    <string name="password">Contraseña</string>
+    <string name="email_error">El campo correo es obligatorio.</string>
+    <string name="password_error">El campo contraseña es obligatorio.</string>
+</resources>
