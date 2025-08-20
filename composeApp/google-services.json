@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "680540103017",
+    "project_id": "shopapp-61f48",
+    "storage_bucket": "shopapp-61f48.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:680540103017:android:ca929c1350a48559e59df8",
+        "android_client_info": {
+          "package_name": "com.juank.shopapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPI4LArjQSVdz7bx431p96F2SbpPyasco"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

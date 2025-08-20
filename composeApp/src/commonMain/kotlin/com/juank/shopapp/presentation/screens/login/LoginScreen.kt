@@ -43,6 +43,9 @@ import shopapp.composeapp.generated.resources.sing_in
 class LoginScreen : Screen {
     @Composable
     override fun Content() {
+        val loginViewModel = koinInject<LoginViewModel>()
+        val uiState = loginViewModel.uiState.collectAsState().value
+
         Scaffold(
             modifier = Modifier
                 .fillMaxSize()
@@ -51,21 +54,23 @@ class LoginScreen : Screen {
             ContentLogin(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
+                    .padding(paddingValues),
+                loginViewModel = loginViewModel,
+                uiState = uiState
             )
         }
     }
 
     @Composable
-    fun ContentLogin(modifier: Modifier) {
+    fun ContentLogin(modifier: Modifier, loginViewModel: LoginViewModel, uiState: LoginScreenUiState) {
         Column(
             modifier = modifier,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TextTitle()
-            TextLoginFields()
+            TextLoginFields(uiState, loginViewModel)
             Spacer(modifier = Modifier.weight(0.7f))
-            ButtonLogin()
+            ButtonLogin(loginViewModel)
         }
     }
 
@@ -80,10 +85,7 @@ class LoginScreen : Screen {
     }
 
     @Composable
-    fun TextLoginFields() {
-
-        val loginViewModel = koinInject<LoginViewModel>()
-        val uiState = loginViewModel.uiState.collectAsState().value
+    fun TextLoginFields(uiState: LoginScreenUiState, loginViewModel: LoginViewModel) {
 
         Column {
             OutlinedTextField(
@@ -94,7 +96,7 @@ class LoginScreen : Screen {
                 },
                 modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp, horizontal = 24.dp),
                 isError = uiState.emailError,
-                supportingText = { Text(stringResource(Res.string.email_error)) }
+                supportingText = { if (uiState.emailError) Text(stringResource(Res.string.email_error)) }
             )
             OutlinedTextField(
                 value = uiState.password,
@@ -124,14 +126,13 @@ class LoginScreen : Screen {
                     }
                 },
                 isError = uiState.passwordError,
-                supportingText = { Text(stringResource(Res.string.password_error)) }
+                supportingText = { if (uiState.passwordError) Text(stringResource(Res.string.password_error)) }
             )
         }
     }
 
     @Composable
-    fun ButtonLogin() {
-        val loginViewModel = koinInject<LoginViewModel>()
+    fun ButtonLogin(loginViewModel: LoginViewModel) {
 
         Button(
             onClick = { loginViewModel.signIn() },

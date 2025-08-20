@@ -18,6 +18,10 @@ import org.koin.dsl.module
 
 expect val platformModule: Module
 
+val firebaseModule : Module = module {
+    single<FirebaseAuth> { Firebase.auth }
+}
+
 val appDao : Module = module {
     single<AppDao> {
         AppDao(productsDao = get())
@@ -34,10 +38,6 @@ val useCaseModule : Module = module {
 
 val viewModelModule : Module = module {
     factory { LoginViewModel(get()) }
-}
-
-val firebaseModule : Module = module {
-    single { Firebase.auth }
 }
 
 val serviceModule : Module = module {

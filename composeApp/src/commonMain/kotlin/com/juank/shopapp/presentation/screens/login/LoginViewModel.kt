@@ -57,9 +57,19 @@ class LoginViewModel(private val loginUseCase: LoginUseCase): ScreenModel {
     }
 
     fun signIn() {
+        if (_uiState.value.email.isEmpty() && _uiState.value.password.isEmpty()) {
+            _uiState.update {
+                it.copy(
+                    emailError = true,
+                    passwordError = true
+                )
+            }
+            return
+        }
+
         if (_uiState.value.email.isEmpty()) {
             _uiState.update {
-                it.copy(emailError = false)
+                it.copy(emailError = true)
             }
             return
         }
