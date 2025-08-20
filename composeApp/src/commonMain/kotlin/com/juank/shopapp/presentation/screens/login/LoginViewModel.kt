@@ -2,7 +2,8 @@ package com.juank.shopapp.presentation.screens.login
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.juank.shopapp.data.di.viewModelModule
+import com.juank.shopapp.data.mappers.dto.UserDto
+import com.juank.shopapp.data.repositoryImpl.login.LoginResults
 import com.juank.shopapp.domain.useCase.login.LoginUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,12 +15,28 @@ data class LoginScreenUiState(
     val password: String = "",
     val visiblePassword: Boolean = false,
     val emailError: Boolean = false,
-    val passwordError: Boolean = false
+    val passwordError: Boolean = false,
+    val currentUser: UserDto? = null
 )
 
 class LoginViewModel(private val loginUseCase: LoginUseCase): ScreenModel {
     private var _uiState = MutableStateFlow(LoginScreenUiState())
     val uiState = _uiState.asStateFlow()
+
+    init {
+        screenModelScope.launch {
+            loginUseCase.getCurrentUser().collect { value ->
+                when (value) {
+                    is LoginResults.CurrentUser -> {
+                        _uiState.update {
+                            it.copy(currentUser = value.user)
+                        }
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
 
     fun setEmail(value: String) {
         _uiState.update {
@@ -56,6 +73,14 @@ class LoginViewModel(private val loginUseCase: LoginUseCase): ScreenModel {
 
         screenModelScope.launch {
             loginUseCase.authenticate(_uiState.value.email, _uiState.value.password).collect {
+
+            }
+        }
+    }
+
+    fun signOut() {
+        screenModelScope.launch {
+            loginUseCase.signOut().collect {
 
             }
         }

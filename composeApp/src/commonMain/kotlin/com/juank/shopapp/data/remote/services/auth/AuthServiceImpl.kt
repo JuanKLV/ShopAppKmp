@@ -11,8 +11,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class AuthServiceImpl(
-    private val auth: FirebaseAuth,
-    private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    private val auth: FirebaseAuth
 ) : AuthService {
 
     override val currentUser: Flow<UserDto>
@@ -27,22 +26,13 @@ class AuthServiceImpl(
     override val isAuthenticated: Boolean
         get() = auth.currentUser != null && auth.currentUser?.isAnonymous == false
 
-    private suspend fun launchWithAwait(block: suspend () -> Unit) {
-        scope.async {
-            block()
-        }.await()
-    }
 
     override suspend fun authenticate(email: String, password: String) {
-        launchWithAwait {
-            auth.signInWithEmailAndPassword(email, password)
-        }
+        auth.signInWithEmailAndPassword(email, password)
     }
 
     override suspend fun createUser(email: String, password: String) {
-        launchWithAwait {
-            auth.createUserWithEmailAndPassword(email, password)
-        }
+        auth.createUserWithEmailAndPassword(email, password)
     }
 
     override suspend fun signOut() {

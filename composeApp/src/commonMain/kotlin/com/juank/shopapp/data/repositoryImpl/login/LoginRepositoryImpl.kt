@@ -8,8 +8,22 @@ import kotlinx.coroutines.flow.flow
 class LoginRepositoryImpl(private val authService: AuthService): LoginRepository {
     override suspend fun authenticate(email: String, password: String): Flow<LoginResults> {
         return flow {
-            authService.createUser(email, password)
-
+            authService.authenticate(email, password)
         }
     }
+
+    override suspend fun getCurrentUser(): Flow<LoginResults> {
+        return flow {
+            authService.currentUser.collect {
+                emit(LoginResults.CurrentUser(it))
+            }
+        }
+    }
+
+    override suspend fun signOut(): Flow<LoginResults> {
+        return flow {
+            authService.signOut()
+        }
+    }
+
 }
