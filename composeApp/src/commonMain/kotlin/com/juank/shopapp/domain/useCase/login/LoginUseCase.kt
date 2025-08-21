@@ -9,11 +9,11 @@ class LoginUseCase(private val loginRepository: LoginRepository) {
         return loginRepository.authenticate(email, password)
     }
 
-    suspend fun getCurrentUser() : Flow<LoginResults> {
-        return loginRepository.getCurrentUser()
+    suspend fun createUser(email: String, password: String) : Flow<LoginResults> {
+        return loginRepository.createUser(email, password)
     }
 
-    suspend fun signOut() : Flow<LoginResults> {
-        return loginRepository.signOut()
+    suspend fun getCurrentUser() : Flow<LoginResults> {
+        return loginRepository.getCurrentUser()
     }
 }

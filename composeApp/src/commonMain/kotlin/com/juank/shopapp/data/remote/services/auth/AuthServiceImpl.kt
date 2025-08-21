@@ -2,8 +2,14 @@ package com.juank.shopapp.data.remote.services.auth
 
 import com.juank.shopapp.data.mappers.dto.UserDto
 import dev.gitlive.firebase.auth.FirebaseAuth
+import dev.gitlive.firebase.auth.FirebaseAuthEmailException
+import dev.gitlive.firebase.auth.FirebaseAuthInvalidCredentialsException
+import dev.gitlive.firebase.auth.FirebaseAuthInvalidUserException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlin.js.ExperimentalJsExport
+
+class AuthException(message: String, cause: Throwable? = null) : Exception(message, cause)
 
 class AuthServiceImpl(
     private val auth: FirebaseAuth
@@ -23,11 +29,32 @@ class AuthServiceImpl(
 
 
     override suspend fun authenticate(email: String, password: String) {
-        auth.signInWithEmailAndPassword(email, password)
+        try {
+            auth.signInWithEmailAndPassword(email, password)
+        } catch (e: Exception) {
+            when (e) {
+                is FirebaseAuthInvalidUserException -> {
+                    throw AuthException("Usuario no registrado.", e)
+                }
+                is FirebaseAuthInvalidCredentialsException -> {
+                    throw AuthException("Usuario o contraseña incorrecta.", e)
+                }
+                is FirebaseAuthEmailException -> {
+                    throw AuthException("Correo invalido.", e)
+                }
+                else -> {
+                    throw e
+                }
+            }
+        }
     }
 
     override suspend fun createUser(email: String, password: String) {
-        auth.createUserWithEmailAndPassword(email, password)
+        try {
+            auth.createUserWithEmailAndPassword(email, password)
+        } catch (e: Exception) {
+            throw AuthException("Error al crear el usuario.", e)
+        }
     }
 
     override suspend fun signOut() {
@@ -35,6 +62,10 @@ class AuthServiceImpl(
             auth.currentUser?.delete()
         }
 
-        auth.signOut()
+        try {
+            auth.signOut()
+        } catch (e: Exception) {
+            throw AuthException("Error al desloguear", e)
+        }
     }
 }

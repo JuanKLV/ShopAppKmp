@@ -8,5 +8,5 @@ interface LoginRepository {
 
     suspend fun getCurrentUser(): Flow<LoginResults>
 
-    suspend fun signOut() : Flow<LoginResults>
+    suspend fun createUser(email: String, password: String) : Flow<LoginResults>
 }

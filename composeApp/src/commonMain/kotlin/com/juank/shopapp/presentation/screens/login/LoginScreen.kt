@@ -11,12 +11,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +32,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
 import com.juank.shopapp.presentation.theme.ColorApp.blueButton
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -43,26 +50,38 @@ import shopapp.composeapp.generated.resources.sing_in
 class LoginScreen : Screen {
     @Composable
     override fun Content() {
+        val navigator: Navigator? = LocalNavigator.current
         val loginViewModel = koinInject<LoginViewModel>()
         val uiState = loginViewModel.uiState.collectAsState().value
+
+        val snackBarHostState = remember { SnackbarHostState() }
+
+        LaunchedEffect(uiState.isErrorAuthenticated) {
+            if (uiState.isErrorAuthenticated && uiState.errorMessage.isNotBlank()) {
+                snackBarHostState.showSnackbar(uiState.errorMessage)
+                loginViewModel.clearErrorMessage()
+            }
+        }
 
         Scaffold(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
+                .background(Color.White),
+            snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
         ) { paddingValues ->
             ContentLogin(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues),
                 loginViewModel = loginViewModel,
-                uiState = uiState
+                uiState = uiState,
+                navigator = navigator
             )
         }
     }
 
     @Composable
-    fun ContentLogin(modifier: Modifier, loginViewModel: LoginViewModel, uiState: LoginScreenUiState) {
+    fun ContentLogin(modifier: Modifier, loginViewModel: LoginViewModel, uiState: LoginScreenUiState, navigator: Navigator?) {
         Column(
             modifier = modifier,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -70,7 +89,7 @@ class LoginScreen : Screen {
             TextTitle()
             TextLoginFields(uiState, loginViewModel)
             Spacer(modifier = Modifier.weight(0.7f))
-            ButtonLogin(loginViewModel)
+            ButtonLogin(loginViewModel, uiState, navigator)
         }
     }
 
@@ -96,7 +115,8 @@ class LoginScreen : Screen {
                 },
                 modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp, horizontal = 24.dp),
                 isError = uiState.emailError,
-                supportingText = { if (uiState.emailError) Text(stringResource(Res.string.email_error)) }
+                supportingText = { if (uiState.emailError) Text(stringResource(Res.string.email_error)) },
+                singleLine = true
             )
             OutlinedTextField(
                 value = uiState.password,
@@ -126,30 +146,34 @@ class LoginScreen : Screen {
                     }
                 },
                 isError = uiState.passwordError,
-                supportingText = { if (uiState.passwordError) Text(stringResource(Res.string.password_error)) }
+                supportingText = { if (uiState.passwordError) Text(stringResource(Res.string.password_error)) },
+                singleLine = true
             )
         }
     }
 
     @Composable
-    fun ButtonLogin(loginViewModel: LoginViewModel) {
-
-        Button(
-            onClick = { loginViewModel.signIn() },
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
-            shape = RoundedCornerShape(8.dp),
-            colors = ButtonColors(
-                containerColor = blueButton,
-                contentColor = Color.White,
-                disabledContentColor = Color.Gray,
-                disabledContainerColor = Color.DarkGray)
-        ) {
-            Text(
-                text = stringResource(Res.string.sing_in),
-                color = Color.White,
-                style = TextStyle(fontWeight = FontWeight.Bold),
-                fontSize = 16.sp
-            )
+    fun ButtonLogin(loginViewModel: LoginViewModel, uiState: LoginScreenUiState, navigator: Navigator?) {
+        if (uiState.isLoading) {
+            CircularProgressIndicator()
+        } else {
+            Button(
+                onClick = { loginViewModel.signIn(navigator) },
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonColors(
+                    containerColor = blueButton,
+                    contentColor = Color.White,
+                    disabledContentColor = Color.Gray,
+                    disabledContainerColor = Color.DarkGray)
+            ) {
+                Text(
+                    text = stringResource(Res.string.sing_in),
+                    color = Color.White,
+                    style = TextStyle(fontWeight = FontWeight.Bold),
+                    fontSize = 16.sp
+                )
+            }
         }
     }
 }

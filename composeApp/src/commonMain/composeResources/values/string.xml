@@ -5,4 +5,17 @@
     <string name="password">Contraseña</string>
     <string name="email_error">El campo correo es obligatorio.</string>
     <string name="password_error">El campo contraseña es obligatorio.</string>
+    <string name="shop">Tienda</string>
+    <string name="home">Inicio</string>
+    <string name="products">Productos</string>
+    <string name="cart">Carrito</string>
+    <string name="profile">Perfil</string>
+    <string name="search_products">Buscar productos</string>
+    <string name="categories">Categorías</string>
+    <string name="products_top">Productos Destacados</string>
+    <string name="proceed_to_confirm">Proceder a la confirmación</string>
+    <string name="subtotal">Subtotal:</string>
+    <string name="delivery">Envío:</string>
+    <string name="taxes">Impuestos:</string>
+    <string name="total">Total:</string>
 </resources>
