@@ -1,6 +1,5 @@
 package com.juank.shopapp.data.repositoryImpl.principal
 
-import com.juank.shopapp.data.local.database.tables.cartItems.CartItemsTable
 import com.juank.shopapp.data.mappers.dto.CartItemDto
 import com.juank.shopapp.data.mappers.dto.toEntity
 import com.juank.shopapp.data.remote.services.auth.AuthService

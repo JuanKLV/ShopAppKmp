@@ -1,6 +1,5 @@
 package com.juank.shopapp.domain.repository.principal
 
-import com.juank.shopapp.data.local.database.tables.cartItems.CartItemsTable
 import com.juank.shopapp.data.mappers.dto.CartItemDto
 import com.juank.shopapp.data.repositoryImpl.principal.PrincipalResults
 import kotlinx.coroutines.flow.Flow

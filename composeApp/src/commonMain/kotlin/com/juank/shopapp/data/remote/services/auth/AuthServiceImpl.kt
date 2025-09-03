@@ -7,7 +7,6 @@ import dev.gitlive.firebase.auth.FirebaseAuthInvalidCredentialsException
 import dev.gitlive.firebase.auth.FirebaseAuthInvalidUserException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlin.js.ExperimentalJsExport
 
 class AuthException(message: String, cause: Throwable? = null) : Exception(message, cause)
 

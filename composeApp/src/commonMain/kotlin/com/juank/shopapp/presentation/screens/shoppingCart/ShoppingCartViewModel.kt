@@ -4,7 +4,6 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.juank.shopapp.data.local.database.tables.products.Products
 import com.juank.shopapp.data.mappers.dto.CartItemDto
-import com.juank.shopapp.data.mappers.dto.toEntity
 import com.juank.shopapp.data.repositoryImpl.shoppingCart.ShoppingCartResults
 import com.juank.shopapp.domain.useCase.shoppingCart.ShoppingCartUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,7 +43,7 @@ class ShoppingCartViewModel(private val shoppingCartUseCase: ShoppingCartUseCase
             shoppingCartUseCase.getCartItems().collect { results ->
                 when(results) {
                     is ShoppingCartResults.CartItems -> {
-                        _uiState.update {
+                        _uiState.update { item ->
                             val mapped = results.cartItemsList.map { e ->
                                 CartItemDto(
                                     product = Products(
@@ -61,7 +60,7 @@ class ShoppingCartViewModel(private val shoppingCartUseCase: ShoppingCartUseCase
                             val subtotal = mapped.sumOf { it.product.price * it.quantity }
                             val total = subtotal + _uiState.value.delivery + _uiState.value.taxes
 
-                            it.copy(
+                            item.copy(
                                 cartItems = mapped,
                                 subtotal = subtotal,
                                 total = total

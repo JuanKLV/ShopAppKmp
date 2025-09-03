@@ -1,6 +1,5 @@
 package com.juank.shopapp.domain.useCase.principal
 
-import com.juank.shopapp.data.local.database.tables.cartItems.CartItemsTable
 import com.juank.shopapp.data.mappers.dto.CartItemDto
 import com.juank.shopapp.data.repositoryImpl.principal.PrincipalResults
 import com.juank.shopapp.domain.repository.principal.PrincipalRepository

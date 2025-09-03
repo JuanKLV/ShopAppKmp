@@ -11,7 +11,6 @@ import com.juank.shopapp.domain.useCase.principal.PrincipalUseCase
 import com.juank.shopapp.presentation.screens.routes.Routes
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
